@@ -12,6 +12,7 @@ namespace coreUserPanel.Controllers
    
     public class TicketController : Controller
     {
+      
 
         public string audiName;
         ProjectTestDataContext context = new ProjectTestDataContext();
@@ -278,7 +279,22 @@ namespace coreUserPanel.Controllers
             context.SaveChanges();
             return RedirectToAction("Index");
         }
+        //[HttpGet]
+        //public IActionResult NewAccount()
+        //{
+        //    return View();
+        //}
+        
+        
+        public IActionResult NewAccount(UserDetails c1)
+        {
+            context.UserDetails.Add(c1);
+            context.SaveChanges();
+            TempData["uid"] = c1.UserDetailId;
+            return RedirectToAction("Index", "Home");
+        }
     }
+    
 }
 
 
