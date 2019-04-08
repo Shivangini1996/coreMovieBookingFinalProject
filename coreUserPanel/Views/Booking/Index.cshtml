@@ -1,4 +1,4 @@
-﻿
+﻿@using Microsoft.AspNetCore.Http;
 @{
     ViewData["Title"] = "Index";
 }
@@ -36,5 +36,42 @@
 </table>
 
 <hr />
+
+@if (Context.Session.GetString("uname") == null)
+{
+
+    <html>
+    <head>
+        <script type="text/javascript">
+         <!--
+            function Warn() {
+
+                alert("Please Sign In ");
+                //document.write(<a asp-controller="Ticket" asp-action="Register" class="btn btn-secondary">Sign In</a>);
+
+            }
+            //-->
+        </script>
+    </head>
+
+    <body>
+
+
+        <form>
+            <a asp-controller="Ticket" asp-action="register" type="button" class="btn btn-info" onclick="Warn();">Proceed</a>
+        </form>
+    </body>
+</html>
+
+
+
+
+
+}
+else
+{
 @*<a asp-controller="" asp-action="Index" class="btn btn-secondary"> Continue Booking</a>*@
-<a asp-controller="Ticket" asp-action="register" class="btn btn-danger">Proceed</a>
+@*<a asp-controller="Ticket" asp-action="register" class="btn btn-danger" onclick="SignIn();">Proceed</a>*@
+
+<a class="btn btn-info" asp-action="register" asp-controller="Ticket">Proceed</a>
+}

@@ -248,13 +248,13 @@ namespace coreUserPanel.Controllers
             List<BookingDetails> op = new List<BookingDetails>();
             List<Bookings> bookings = new List<Bookings>();
             op = context.BookingDetails.Where(x => x.BookingId == id).ToList();
-            foreach(var item in op)
+            foreach (var item in op)
             {
                 Bookings c = context.Bookings.Where(x => x.BookingId == item.BookingId).SingleOrDefault();
                 bookings.Add(c);
-               
+           
             }
-            return View();
+            return View(); 
             //int id = int.Parse(HttpContext.Session.GetString("uid"));
             //BookingDetails c = context.BookingDetails.Where(x => x.BookingId == id).SingleOrDefault();
             //return View(c);
