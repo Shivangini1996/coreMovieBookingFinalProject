@@ -1,15 +1,11 @@
-﻿
-
-
-
-@{
+﻿@{
     ViewData["Title"] = "Invoice";
-    Layout = "~/Views/Shared/_UserLayout.cshtml";
+    Layout = null;
 }
 
 <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<link rel="stylesheet" href="~/css/StyleSheet.css" />
-<script src="~/js/JavaScript.js"></script>
+<link rel="stylesheet" href="~/css/invoice.css" />
+<script src="~/js/invoice.js"></script>
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <div id="invoice">
@@ -26,18 +22,16 @@
                 <div class="row">
                     <div class="col">
                         <a target="_blank" href="https://lobianijs.com">
-                            <img src="https://us.123rf.com/450wm/grgroup/grgroup1304/grgroup130400044/18954250-illustration-of-film-icon-movie-popcorn-vector-illustration.jpg?ver=6" alt="Illustration of film icon, movie popcorn, vector illustration Stock Vector - 18954250" />
+                            <img src="https://bareillytoday.com/wp-content/uploads/2017/10/Top-10-Indias-Best-Online-Movie-Ticket-Booking-Websites-730x410.png" data-holder-rendered="true" />
                         </a>
                     </div>
                     <div class="col company-details">
                         <h2 class="name">
                             <a target="_blank" href="https://lobianijs.com">
-                                BookMyShow
+                                Sanya
                             </a>
                         </h2>
-                        @*<div>455 Foggy Heights, AZ 85004, US</div>
-                            <div>(123) 456-789</div>*@
-                        <div>Always for your service</div>
+                        <div>sanyasingh097@gmail.com</div>
                     </div>
                 </div>
             </header>
@@ -50,7 +44,7 @@
                         <div class="email"> Contact Person:@ViewBag.UserDetails.ContactNo</div>
                     </div>
                     <div class="col invoice-details">
-                        <h1 class="invoice-id">Booking Details</h1>
+                        <h1 class="invoice-id">INVOICE</h1>
                         <div class="date">Date of Invoice: 01/10/2018</div>
                         <div class="date">Due Date: 30/10/2018</div>
                     </div>
@@ -58,7 +52,7 @@
                 <table border="0" cellspacing="0" cellpadding="0">
                     <thead>
                         <tr>
-                            <th>#</th>
+                            @*<th>#</th>*@
                             <th class="text-left">DESCRIPTION</th>
                             <th class="text-right">Movie Price</th>
                             <th class="text-right">Quantity</th>
@@ -71,7 +65,7 @@
                         {
                             <tr>
                                 @*<td class="no">04</td>*@
-                                <td>*</td>
+                                @*<td>*</td>*@
                                 <td class="text-left">
                                     <h3> @item.Movies.MovieName</h3>
                                 </td>
@@ -87,18 +81,9 @@
 
                         </tbody>
                     <tfoot>
-                        @*<tr>
-                                <td colspan="2"></td>
-                                <td colspan="2">SUBTOTAL</td>
-                                <td>$5,200.00</td>
-                            </tr>
-                            <tr>
-                                <td colspan="2"></td>
-                                <td colspan="2">TAX 25%</td>
-                                <td>$1,300.00</td>
-                            </tr>*@
+                        
                         <tr>
-                            <td colspan="2"></td>
+                            <td colspan="1"></td>
                             <td colspan="2">GRAND TOTAL</td>
                             <td>@ViewBag.total</td>
                         </tr>
@@ -108,16 +93,12 @@
                 <br />
                 <div class="thanks">Thank you!</div>
                 <div class="notices">
-                    @*<div>NOTICE:</div>
-                        <div class="notice">A finance charge of 1.5% will be made on unpaid balances after 30 days.</div>*@
+                   
                 </div>
             </main>
-            <footer>
-                Invoice was created on a computer and is valid without the signature and seal.
-            </footer>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-dark">Go Back</a>
         </div>
         <!--DO NOT DELETE THIS div. IT is responsible for showing footer always at the bottom-->
         <div></div>
     </div>
 </div>
-

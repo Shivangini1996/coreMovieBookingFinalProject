@@ -16,13 +16,24 @@ namespace coreUserPanel.Controllers
 
         public string audiName;
         ProjectTestDataContext context = new ProjectTestDataContext();
-        public IActionResult Index()
-        {
-            return View();
-        }
+        
+        [HttpGet]
+
         public IActionResult Login()
         {
-            return View();
+            var user = HttpContext.Session.GetString("uname");
+
+            if (user != null)
+            {
+                int custId = int.Parse(HttpContext.Session.GetString("uid"));
+                return RedirectToAction("Checkout" , "Ticket", new { @id = custId });
+            }
+            else
+            {
+
+                return View("Login");
+            }
+            
         }
 
         [HttpPost]
@@ -143,7 +154,7 @@ namespace coreUserPanel.Controllers
 
             TempData["uid"] = c1.UserDetailId;
            
-            return RedirectToAction("Checkout","Ticket");
+            return RedirectToAction("Invoice","Ticket");
         }
 
         public void checkAudi(string showTiming)
@@ -162,6 +173,7 @@ namespace coreUserPanel.Controllers
             }
         }
 
+        [Route("Checkout")]
         public IActionResult Checkout()
         {
             var id = int.Parse(TempData["uid"].ToString());
@@ -177,11 +189,15 @@ namespace coreUserPanel.Controllers
             TempData["uid"] = id;
             return View(userDetails);
         }
+        [Route("Checkout")]
         [HttpPost]
+
         public IActionResult Checkout(UserDetails userDetails)
         {
             //context.UserDetails.Add(userDetails);
             //context.SaveChanges();
+           
+
             var amount = (TempData["total"]);
             var uid = (TempData["uid"]).ToString();
             Bookings bookings = new Bookings()
@@ -194,7 +210,8 @@ namespace coreUserPanel.Controllers
             ViewBag.book = bookings;
             context.Bookings.Add(bookings);
             context.SaveChanges();
-
+           
+            
 
             var bookmovie = SessionHelper.GetObjectFromJson<List<Item>>(HttpContext.Session, "bookmovie");
             List<BookingDetails> BookingDetail = new List<BookingDetails>();
@@ -205,6 +222,7 @@ namespace coreUserPanel.Controllers
                     BookingId = bookings.BookingId,
                     MovieId = bookmovie[i].Movies.MovieId,
                     QtySeats = bookmovie[i].Quantity
+
                 };
                 context.BookingDetails.Add(booking);
             }
@@ -213,22 +231,26 @@ namespace coreUserPanel.Controllers
             TempData["cust"] = /*userDetails.UserDetailId*/uid;
             ViewBag.bookings = null;
 
-            return RedirectToAction("Invoice","Ticket");
+            return RedirectToAction("Invoice", "Ticket");
         }
+
+
+        [Route("Invoice")]
         public IActionResult Invoice()
         {
-            int userId = int.Parse(TempData["uid"].ToString());
-            UserDetails userdetails = context.UserDetails.Where(x => x.UserDetailId == userId).SingleOrDefault();
-            ViewBag.UserDetail = ViewBag;
-
+            int custId = int.Parse(TempData["cust"].ToString());
+            UserDetails userDetails = context.UserDetails.Where(x => x.UserDetailId == custId).SingleOrDefault();
+            ViewBag.UserDetails = userDetails;
 
             var bookmovie = SessionHelper.GetObjectFromJson<List<Item>>(HttpContext.Session, "bookmovie");
             ViewBag.bookmovie = bookmovie;
 
-            ViewBag.total = bookmovie.Sum(item => item.Movies.MoviePrice * item.Quantity);
+            ViewBag.Total = bookmovie.Sum(item => item.Movies.MoviePrice * item.Quantity);
             return View();
 
         }
+
+
         public IActionResult ViewProfile()
         {
             int id = int.Parse(HttpContext.Session.GetString("uid"));
@@ -279,19 +301,20 @@ namespace coreUserPanel.Controllers
             context.SaveChanges();
             return RedirectToAction("Index");
         }
-        //[HttpGet]
-        //public IActionResult NewAccount()
-        //{
-        //    return View();
-        //}
-        
-        
+        [Route("NewAccount")]
+        [HttpGet]
+        public IActionResult NewAccount()
+        {
+            return View();
+        }
+
+        [HttpPost]
         public IActionResult NewAccount(UserDetails c1)
         {
             context.UserDetails.Add(c1);
             context.SaveChanges();
             TempData["uid"] = c1.UserDetailId;
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Checkout", "Ticket");
         }
     }
     
