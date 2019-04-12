@@ -13,7 +13,7 @@
     <div class="container">
         <div class="py-5 text-center">
             <img class="d-block mx-auto mb-4" src="" alt="" width="72" height="72">
-            <img src="https://d3i7tbcp0hzfhm.cloudfront.net/m/mi/m/mc-o0231524/1.JPG" />
+            @*<img src="https://d3i7tbcp0hzfhm.cloudfront.net/m/mi/m/mc-o0231524/1.JPG" />*@
             <br />
             <br />
             <h2><b>USER DETAILS</b></h2>
@@ -64,7 +64,7 @@
                         </div>
 
                     </div>
-                    
+
                     <div class="mb-3">
                         <label for="email">Email</label>
                         <input type="email" asp-for="Email" class="form-control" id="Email" placeholder="Email" required>
@@ -80,6 +80,15 @@
                         <div class="invalid-feedback">
                             Please enter your valid phone number
                         </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Show Timings</label>
+                        <select name="showTiming" class="form-control">
+                            <option>12 Noon</option>
+                            <option>3 PM</option>
+                            <option>6 PM</option>
+                        </select>
                     </div>
 
                     <hr class="mb-4">

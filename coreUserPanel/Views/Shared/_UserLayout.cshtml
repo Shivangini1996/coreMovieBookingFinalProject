@@ -27,16 +27,16 @@
                     </div>
                 </li>
             </ul>
-            @if (Context.Session.GetString("uname") == null)
+            @if (Context.Session.GetString("uid") == null)
             {
-                <a class="btn btn-info" asp-action="Login" asp-controller="Ticket">Login</a>
+                <a class="btn btn-info" asp-action="DirectLogin" asp-controller="Ticket">Login</a>
 
             }
             else
             {
                 <div>
                 <label class="form-control">
-                    Welcome @Context.Session.GetString("uname")!!
+                    Welcome @Context.Session.GetString("uid")!!
                 </label>
                 </div>
                

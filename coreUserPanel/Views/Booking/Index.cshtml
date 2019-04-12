@@ -1,11 +1,21 @@
 ﻿@using Microsoft.AspNetCore.Http;
 @{
     ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
 }
 
-<h2>Cart</h2>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+<br />
+<br />
+<br />
+<br />
+<style type="text/css">
+    body {
+        background-image: url(https://img.freepik.com/free-photo/white-plain-wall-surface-background_53876-74688.jpg?size=626&ext=jpg);
+    }
+</style>
 
-<table class="table">
+<table class="table table-dark">
     <tr>
         <th>Options</th>
         <th>Id</th>
@@ -17,17 +27,17 @@
     </tr>
     @foreach (var item in ViewBag.bookmovie)
     {
-    <tr>
-        <td><a asp-controller="booking" asp-action="Remove" asp-route-id="@item.Movies.MovieId">Remove</a></td>
-        <td>@item.Movies.MovieId</td>
-        <td>@item.Movies.MovieName</td>
-        <td><img src="@item.Movies.MovieImage" width="60" /></td>
-        <td>@item.Movies.MoviePrice</td>
-        <td> <a class="btn btn-default" asp-controller="Booking" asp-action="Minus" asp-route-id="@item.Movies.MovieId">-</a>@item.Quantity<a class="btn btn-default" asp-controller="Booking" asp-action="Plus" asp-route-id="@item.Movies.MovieId">+</a></td>
+        <tr>
+            <td><a asp-controller="booking" asp-action="Remove" asp-route-id="@item.Movies.MovieId">Remove</a></td>
+            <td><b>@item.Movies.MovieId</b></td>
+            <td><b>@item.Movies.MovieName</b></td>
+            <td><b><img src="@item.Movies.MovieImage" width="60" /></b></td>
+            <td><b>@item.Movies.MoviePrice</b></td>
+            <td> <a class="btn btn-default" asp-controller="Booking" asp-action="Minus" asp-route-id="@item.Movies.MovieId">-</a>@item.Quantity<a class="btn btn-default" asp-controller="Booking" asp-action="Plus" asp-route-id="@item.Movies.MovieId">+</a></td>
 
 
-        <td>@(item.Movies.MoviePrice * item.Quantity)</td>
-    </tr>
+            <td>@(item.Movies.MoviePrice * item.Quantity)</td>
+        </tr>
     }
     <tr>
         <td align="right" colspan="6"><b>Sum</b></td>
@@ -39,38 +49,6 @@
 
 <hr />
 
-@if (Context.Session.GetString("uname") == null)
-{
-
-    <html>
-    <head>
-        <script type="text/javascript">
-         <!--
-            function Warn() {
-
-                alert("Please Sign In ");
-                //document.write(<a asp-controller="Ticket" asp-action="Register" class="btn btn-secondary">Sign In</a>);
-
-            }
-            //-->
-        </script>
-    </head>
-
-    <body>
-
-
-        <form>
-            <a asp-controller="Ticket" asp-action="Login" type="button" class="btn btn-info" onclick="Warn();">Proceed</a>
-        </form>
-    </body>
-</html>
-
-
-}
-else
-{
-
-<a class="btn btn-info" asp-action="Checkout" asp-controller="Ticket">Proceed</a>
-}
+<a class="btn btn-info" asp-action="Login" asp-controller="Ticket">Proceed</a>
 
 

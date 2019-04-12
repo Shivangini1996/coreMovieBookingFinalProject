@@ -12,7 +12,8 @@ namespace coreUserPanel.Controllers
    
     public class TicketController : Controller
     {
-      
+
+        public int discount = 100;
 
         public string audiName;
         ProjectTestDataContext context = new ProjectTestDataContext();
@@ -21,10 +22,11 @@ namespace coreUserPanel.Controllers
 
         public IActionResult Login()
         {
-            var user = HttpContext.Session.GetString("uname");
+            var user = HttpContext.Session.GetString("uid");
 
             if (user != null)
             {
+                
                 int custId = int.Parse(HttpContext.Session.GetString("uid"));
                 return RedirectToAction("Checkout" , "Ticket", new { @id = custId });
             }
@@ -34,6 +36,20 @@ namespace coreUserPanel.Controllers
                 return View("Login");
             }
             
+        }
+
+        [HttpGet]
+        public IActionResult DirectLogin()
+        {
+            return View("DirectLogin");
+        }
+
+        [HttpPost]
+        public IActionResult DirectLogin(string username, string password)
+        {
+            var user = context.UserDetails.Where(x => x.UserName == username && x.Password == password).SingleOrDefault();
+            HttpContext.Session.SetString("uid", (user.UserDetailId).ToString());
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]
@@ -47,31 +63,34 @@ namespace coreUserPanel.Controllers
             }
             else
             {
-                var userName = user.UserName;
-                var Passwords = user.Password;
-                string userdetailId = Convert.ToString( user.UserDetailId);
-                var email = user.Email;
-                var contact = user.ContactNo;
-                if (username != null && password != null && username.Equals(userName) && password.Equals(Passwords))
-                {
-                    HttpContext.Session.SetString("uname", username);
-                    HttpContext.Session.SetString("uid", userdetailId);
-                    HttpContext.Session.SetString("uemail", email);
-                    HttpContext.Session.SetInt32("econtact", contact);
-                    return RedirectToAction("Index", "Home");
-                }
-                else
-                {
-                    ViewBag.error = "Invalid Credentials";
-                    return RedirectToAction("Login","Ticket");
-                }
+                HttpContext.Session.SetString("uid", (user.UserDetailId).ToString());
+                return RedirectToAction("Checkout", "Ticket");
+                //var userName = user.UserName;
+                //var Passwords = user.Password;
+                //string userdetailId = Convert.ToString( user.UserDetailId);
+                //var email = user.Email;
+                //var contact = user.ContactNo;
+                //if (username != null && password != null && username.Equals(userName) && password.Equals(Passwords))
+                //{
+                //    HttpContext.Session.SetString("uname", username);
+                //    HttpContext.Session.SetString("uid", userdetailId);
+                //    HttpContext.Session.SetString("uemail", email);
+                //    HttpContext.Session.SetInt32("econtact", contact);
+                //    return RedirectToAction("Checkout", "Ticket");
+                //}
+
+                //else
+                //{
+                //    ViewBag.error = "Invalid Credentials";
+                //    return RedirectToAction("Login","Ticket");
+                //}
             }
         }
         [Route("Logout")]
         [HttpGet]
         public IActionResult Logout()
         {
-            HttpContext.Session.Remove("uname");
+            HttpContext.Session.Remove("uid");
             return RedirectToAction("Index","Home");
         }
         [Route("ChangePassword")]
@@ -101,12 +120,32 @@ namespace coreUserPanel.Controllers
             return RedirectToAction("Login", "Ticket");
         }
 
-        [Route("register")]
+        
 
         [HttpGet]
-        public ViewResult Register()
+        public ActionResult DirectRegister()
         {
-           
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult DirectRegister(UserDetails userDetails)
+        {
+            if(ModelState.IsValid)
+            {
+                context.UserDetails.Add(userDetails);
+                context.SaveChanges();
+                HttpContext.Session.SetString("uid", (userDetails.UserDetailId).ToString());
+                return RedirectToAction("Index", "Home");
+            }
+            return View();
+            
+        }
+        [Route("register")]
+        [HttpGet]
+        public ActionResult Register()
+        {
+            
             var bookmovie = SessionHelper.GetObjectFromJson<List<Item>>(HttpContext.Session, "bookmovie");
             ViewBag.bookmovie = bookmovie;
             ViewBag.total = bookmovie.Sum(item => item.Movies.MoviePrice * item.Quantity);
@@ -154,7 +193,25 @@ namespace coreUserPanel.Controllers
 
             TempData["uid"] = c1.UserDetailId;
            
-            return RedirectToAction("Invoice","Ticket");
+            return RedirectToAction("Checkout","Ticket");
+        }
+
+        public ActionResult NewRegister()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult NewRegister(UserDetails userDetails)
+        {
+            if(ModelState.IsValid)
+            {
+                context.UserDetails.Add(userDetails);
+                context.SaveChanges();
+                HttpContext.Session.SetString("uid", (userDetails.UserDetailId).ToString());
+                return RedirectToAction("Checkout", "Ticket");
+            }
+            return View();
         }
 
         public void checkAudi(string showTiming)
@@ -176,68 +233,76 @@ namespace coreUserPanel.Controllers
         [Route("Checkout")]
         public IActionResult Checkout()
         {
-            var id = int.Parse(TempData["uid"].ToString());
+            var id = Convert.ToInt32(HttpContext.Session.GetString("uid"));
+            //var id = int.Parse(TempData["uid"].ToString());
             var userDetails = context.UserDetails.Where(x => x.UserDetailId == id).SingleOrDefault();
             //UserDetails userDetails = context.UserDetails.Where(x => x.UserDetailId == id).SingleOrDefault();
             //ViewBag.UserDetails = userDetails;
 
             var bookmovie = SessionHelper.GetObjectFromJson<List<Item>>(HttpContext.Session, "bookmovie");
-            ViewBag.bookmovie = bookmovie;
-            ViewBag.total = bookmovie.Sum(item => item.Movies.MoviePrice * item.Quantity);
-            //ViewBag.totalitem = bookmovie.Count();
-            TempData["total"] = ViewBag.total;
-            TempData["uid"] = id;
-            return View(userDetails);
+
+            if (bookmovie == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                ViewBag.bookmovie = bookmovie;
+                ViewBag.total = bookmovie.Sum(item => item.Movies.MoviePrice * item.Quantity);
+                //ViewBag.totalitem = bookmovie.Count();
+                TempData["total"] = ViewBag.total;
+                TempData["uid"] = id;
+                return View(userDetails);
+            }
+           
         }
         [Route("Checkout")]
         [HttpPost]
 
         public IActionResult Checkout(UserDetails userDetails)
         {
-            //context.UserDetails.Add(userDetails);
-            //context.SaveChanges();
-           
+            var bookmovie = SessionHelper.GetObjectFromJson<List<Item>>(HttpContext.Session, "bookmovie");
 
+            var showTiming = Request.Form["showTiming"].ToString();
             var amount = (TempData["total"]);
             var uid = (TempData["uid"]).ToString();
-            Bookings bookings = new Bookings()
-            {
-                BookingAmount = Convert.ToSingle(amount),
-                BookingDate = DateTime.Now,
-                UserDetailId = int.Parse(uid)
-                //UserDetailId = userDetails.UserDetailId
-            };
-            ViewBag.book = bookings;
-            context.Bookings.Add(bookings);
-            context.SaveChanges();
-           
-            
+            checkAudi(showTiming);
 
-            var bookmovie = SessionHelper.GetObjectFromJson<List<Item>>(HttpContext.Session, "bookmovie");
+            Bookings booking = new Bookings()
+            {
+                BookingAmount = Convert.ToInt32(amount),
+                BookingDate = DateTime.Now,
+                ShowTiming = showTiming,
+                AudiName = audiName,
+                UserDetailId = Convert.ToInt32(uid)
+            };
+            context.Bookings.Add(booking);
+            context.SaveChanges();
+
             List<BookingDetails> BookingDetail = new List<BookingDetails>();
             for (int i = 0; i < bookmovie.Count; i++)
             {
-                BookingDetails booking = new BookingDetails()
+                BookingDetails bookingDetail = new BookingDetails()
                 {
-                    BookingId = bookings.BookingId,
+                    BookingId = booking.BookingId,
                     MovieId = bookmovie[i].Movies.MovieId,
                     QtySeats = bookmovie[i].Quantity
-
                 };
-                context.BookingDetails.Add(booking);
+                context.BookingDetails.Add(bookingDetail);
             }
             BookingDetail.ForEach(n => context.BookingDetails.Add(n));
             context.SaveChanges();
-            TempData["cust"] = /*userDetails.UserDetailId*/uid;
-            ViewBag.bookings = null;
 
-            return RedirectToAction("Invoice", "Ticket");
+            TempData.Keep("uid");
+            TempData["bookingId"] = booking.BookingId;
+            return RedirectToAction("NewInvoice", "Ticket");
         }
 
 
         [Route("Invoice")]
         public IActionResult Invoice()
         {
+
             int custId = int.Parse(TempData["cust"].ToString());
             UserDetails userDetails = context.UserDetails.Where(x => x.UserDetailId == custId).SingleOrDefault();
             ViewBag.UserDetails = userDetails;
@@ -247,6 +312,30 @@ namespace coreUserPanel.Controllers
 
             ViewBag.Total = bookmovie.Sum(item => item.Movies.MoviePrice * item.Quantity);
             return View();
+
+        }
+
+        public IActionResult NewInvoice()
+        {
+            
+            int userId = Convert.ToInt32(TempData["uid"]);
+            int bookingId = Convert.ToInt32(TempData["bookingId"]);
+
+            var bookmovie = SessionHelper.GetObjectFromJson<List<Item>>(HttpContext.Session, "bookmovie");
+            UserDetails user = context.UserDetails.Where(u => u.UserDetailId == userId).SingleOrDefault();
+            Bookings book = context.Bookings.Where(b => b.BookingId == bookingId).SingleOrDefault();
+
+            //Bookings booking = context.Bookings.Where()
+            //Bookings booking = context.Bookings.Where(b => b.UserDetailId == userId).SingleOrDefault();
+         
+            ViewBag.bookmovie = bookmovie;
+            ViewBag.Total = bookmovie.Sum(item => item.Movies.MoviePrice * item.Quantity);
+            ViewBag.user = user;
+            ViewBag.book = book;
+            ViewBag.discount = discount;
+            ViewBag.subtotal = ViewBag.Total - discount;
+            return View();
+
 
         }
 

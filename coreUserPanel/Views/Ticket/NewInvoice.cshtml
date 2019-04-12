@@ -1,0 +1,119 @@
+﻿@{
+    ViewData["Title"] = "Invoice";
+    Layout = null;
+}
+<head>
+    <link rel="stylesheet" href="~/css/NewInvoice.css" />
+
+
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+</head>
+<!------ Include the above in your HEAD tag ---------->
+
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+               
+                <hr>
+                <div class="row">
+                    <div class="col-xs-6">
+                        <h3 class="to">Name:@ViewBag.user.UserName</h3>
+                        <h3 class="to">Email:@ViewBag.user.Email</h3>
+                        <h3 class="to">Contact Number:@ViewBag.user.ContactNo</h3>
+                        
+                       
+                    </div>
+                    <div class="col-xs-6 text-right">
+                       
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-6">
+                       
+                      
+                    </div>
+                    <div class="col-xs-6 text-right">
+
+                        <h3 class="to">Booking Date:@ViewBag.book.BookingDate</h3>
+                        @*<address>
+            <strong>Order Date:</strong><br>
+            March 7, 2014<br><br>
+        </address>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><strong>Booking</strong></h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table table-condensed">
+                                <thead>
+                                    <tr>
+
+
+                                        <th class="text-center"><strong>Movie Name</strong></th>
+                                        <th class="text-center"><strong>Movie Price</strong></th>
+                                        <th class="text-right"><strong>Seats</strong></th>
+                                        <th class="text-right"><strong>Amount</strong></th>
+                                        
+
+
+
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- foreach ($order->lineItems as $line) or some such thing here -->
+
+                                    @foreach (var item in ViewBag.bookmovie)
+                                    {
+                                        <tr>
+
+                                            <td class="text-center">@item.Movies.MovieName</td>
+
+                                            <td class="text-center">@(item.Movies.MoviePrice * item.Quantity)</td>
+                                            <td class="text-right">@(item.Quantity)</td>
+                                            <td class="text-right">@ViewBag.total</td>
+
+
+                                        </tr>
+                                        @*<table class=" table table-responsive">
+                                            <thead>
+                                            <th class="text-right"><strong>Discount</strong></th>
+
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td class="text-right">@(ViewBag.total - ViewBag.discount)</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>*@
+                                        <table class=" table table-responsive ">
+                                            <thead>
+                                            <th class="text-right"><strong>Sub Total</strong></th>
+
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td class="text-right">@(ViewBag.subtotal)</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
