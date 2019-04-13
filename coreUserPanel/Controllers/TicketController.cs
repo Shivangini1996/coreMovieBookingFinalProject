@@ -65,25 +65,7 @@ namespace coreUserPanel.Controllers
             {
                 HttpContext.Session.SetString("uid", (user.UserDetailId).ToString());
                 return RedirectToAction("Checkout", "Ticket");
-                //var userName = user.UserName;
-                //var Passwords = user.Password;
-                //string userdetailId = Convert.ToString( user.UserDetailId);
-                //var email = user.Email;
-                //var contact = user.ContactNo;
-                //if (username != null && password != null && username.Equals(userName) && password.Equals(Passwords))
-                //{
-                //    HttpContext.Session.SetString("uname", username);
-                //    HttpContext.Session.SetString("uid", userdetailId);
-                //    HttpContext.Session.SetString("uemail", email);
-                //    HttpContext.Session.SetInt32("econtact", contact);
-                //    return RedirectToAction("Checkout", "Ticket");
-                //}
-
-                //else
-                //{
-                //    ViewBag.error = "Invalid Credentials";
-                //    return RedirectToAction("Login","Ticket");
-                //}
+                
             }
         }
         [Route("Logout")]
@@ -141,61 +123,7 @@ namespace coreUserPanel.Controllers
             return View();
             
         }
-        [Route("register")]
-        [HttpGet]
-        public ActionResult Register()
-        {
-            
-            var bookmovie = SessionHelper.GetObjectFromJson<List<Item>>(HttpContext.Session, "bookmovie");
-            ViewBag.bookmovie = bookmovie;
-            ViewBag.total = bookmovie.Sum(item => item.Movies.MoviePrice * item.Quantity);
-            TempData["total"] = ViewBag.total;
-            
-            return View();
-        }
-        [Route("register")]
-        [HttpPost]
-        public IActionResult Register(UserDetails c1)
-        {
-            var showTiming = Request.Form["showTiming"].ToString();
-            var bookmovie = SessionHelper.GetObjectFromJson<List<Item>>(HttpContext.Session, "bookmovie");
-            var total = bookmovie.Sum(item => item.Movies.MoviePrice * item.Quantity);
-            context.UserDetails.Add(c1);
-            context.SaveChanges();
-
-            checkAudi(showTiming);
-
-            Bookings booking = new Bookings()
-            {
-                BookingAmount = total,
-                BookingDate = DateTime.Now,
-                ShowTiming = showTiming,
-                AudiName = audiName,
-                UserDetailId = c1.UserDetailId
-            };
-
-            context.Bookings.Add(booking);
-            context.SaveChanges();
-
-            List<BookingDetails> BookingDetail = new List<BookingDetails>();
-            for (int i = 0; i < bookmovie.Count; i++)
-            {
-                BookingDetails bookingDetail = new BookingDetails()
-                {
-                    BookingId = booking.BookingId,
-                    MovieId = bookmovie[i].Movies.MovieId,
-                    QtySeats = bookmovie[i].Quantity
-                };
-                context.BookingDetails.Add(bookingDetail);
-            }
-            BookingDetail.ForEach(n => context.BookingDetails.Add(n));
-            context.SaveChanges();
-
-            TempData["uid"] = c1.UserDetailId;
-           
-            return RedirectToAction("Checkout","Ticket");
-        }
-
+        
         public ActionResult NewRegister()
         {
             return View();
@@ -299,27 +227,14 @@ namespace coreUserPanel.Controllers
         }
 
 
-        [Route("Invoice")]
-        public IActionResult Invoice()
-        {
-
-            int custId = int.Parse(TempData["cust"].ToString());
-            UserDetails userDetails = context.UserDetails.Where(x => x.UserDetailId == custId).SingleOrDefault();
-            ViewBag.UserDetails = userDetails;
-
-            var bookmovie = SessionHelper.GetObjectFromJson<List<Item>>(HttpContext.Session, "bookmovie");
-            ViewBag.bookmovie = bookmovie;
-
-            ViewBag.Total = bookmovie.Sum(item => item.Movies.MoviePrice * item.Quantity);
-            return View();
-
-        }
+       
 
         public IActionResult NewInvoice()
         {
             
             int userId = Convert.ToInt32(TempData["uid"]);
             int bookingId = Convert.ToInt32(TempData["bookingId"]);
+        
 
             var bookmovie = SessionHelper.GetObjectFromJson<List<Item>>(HttpContext.Session, "bookmovie");
             UserDetails user = context.UserDetails.Where(u => u.UserDetailId == userId).SingleOrDefault();
@@ -355,24 +270,9 @@ namespace coreUserPanel.Controllers
 
 
         }
-        public IActionResult BookingDetails(int id)
-        {
-            List<BookingDetails> op = new List<BookingDetails>();
-            List<Bookings> bookings = new List<Bookings>();
-            op = context.BookingDetails.Where(x => x.BookingId == id).ToList();
-            foreach (var item in op)
-            {
-                Bookings c = context.Bookings.Where(x => x.BookingId == item.BookingId).SingleOrDefault();
-                bookings.Add(c);
-           
-            }
-            return View(); 
-            //int id = int.Parse(HttpContext.Session.GetString("uid"));
-            //BookingDetails c = context.BookingDetails.Where(x => x.BookingId == id).SingleOrDefault();
-            //return View(c);
+        
 
-
-        }
+        
         [HttpGet]
         public IActionResult EditProfile()
         {
@@ -390,21 +290,7 @@ namespace coreUserPanel.Controllers
             context.SaveChanges();
             return RedirectToAction("Index");
         }
-        [Route("NewAccount")]
-        [HttpGet]
-        public IActionResult NewAccount()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public IActionResult NewAccount(UserDetails c1)
-        {
-            context.UserDetails.Add(c1);
-            context.SaveChanges();
-            TempData["uid"] = c1.UserDetailId;
-            return RedirectToAction("Checkout", "Ticket");
-        }
+        
     }
     
 }
