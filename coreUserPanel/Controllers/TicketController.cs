@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace coreUserPanel.Controllers
 {
-   
+
     public class TicketController : Controller
     {
 
@@ -17,25 +17,28 @@ namespace coreUserPanel.Controllers
 
         public string audiName;
         ProjectTestDataContext context = new ProjectTestDataContext();
-        
+
         [HttpGet]
 
         public IActionResult Login()
         {
             var user = HttpContext.Session.GetString("uid");
+           
+           
 
             if (user != null)
             {
-                
+
                 int custId = int.Parse(HttpContext.Session.GetString("uid"));
-                return RedirectToAction("Checkout" , "Ticket", new { @id = custId });
+                
+                return RedirectToAction("Checkout", "Ticket", new { @id = custId });
             }
             else
             {
 
                 return View("Login");
             }
-            
+
         }
 
         [HttpGet]
@@ -49,9 +52,11 @@ namespace coreUserPanel.Controllers
         {
             var user = context.UserDetails.Where(x => x.UserName == username && x.Password == password).SingleOrDefault();
             HttpContext.Session.SetString("uid", (user.UserDetailId).ToString());
+            HttpContext.Session.SetString("uname", (user.UserName).ToString());
             return RedirectToAction("Index", "Home");
         }
 
+        
         [HttpPost]
         public IActionResult Login(string username, string password)
         {
@@ -64,8 +69,9 @@ namespace coreUserPanel.Controllers
             else
             {
                 HttpContext.Session.SetString("uid", (user.UserDetailId).ToString());
+                HttpContext.Session.SetString("uname", (user.UserName).ToString());
                 return RedirectToAction("Checkout", "Ticket");
-                
+
             }
         }
         [Route("Logout")]
@@ -73,7 +79,7 @@ namespace coreUserPanel.Controllers
         public IActionResult Logout()
         {
             HttpContext.Session.Remove("uid");
-            return RedirectToAction("Index","Home");
+            return RedirectToAction("Index", "Home");
         }
         [Route("ChangePassword")]
         [HttpGet]
@@ -85,7 +91,7 @@ namespace coreUserPanel.Controllers
         [HttpPost]
         public IActionResult ChangePassword(string oldpassword, string newpassword, string newpassword1)
         {
-           int id = int.Parse( HttpContext.Session.GetString("uid"));
+            int id = int.Parse(HttpContext.Session.GetString("uid"));
             UserDetails c = context.UserDetails.Where(x => x.UserDetailId == id).SingleOrDefault();
             if (oldpassword == c.Password && newpassword == newpassword1)
             {
@@ -102,7 +108,7 @@ namespace coreUserPanel.Controllers
             return RedirectToAction("Login", "Ticket");
         }
 
-        
+
 
         [HttpGet]
         public ActionResult DirectRegister()
@@ -113,7 +119,7 @@ namespace coreUserPanel.Controllers
         [HttpPost]
         public ActionResult DirectRegister(UserDetails userDetails)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 context.UserDetails.Add(userDetails);
                 context.SaveChanges();
@@ -121,9 +127,9 @@ namespace coreUserPanel.Controllers
                 return RedirectToAction("Index", "Home");
             }
             return View();
-            
+
         }
-        
+
         public ActionResult NewRegister()
         {
             return View();
@@ -132,7 +138,7 @@ namespace coreUserPanel.Controllers
         [HttpPost]
         public ActionResult NewRegister(UserDetails userDetails)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 context.UserDetails.Add(userDetails);
                 context.SaveChanges();
@@ -144,7 +150,7 @@ namespace coreUserPanel.Controllers
 
         public void checkAudi(string showTiming)
         {
-            if(showTiming == "12 Noon")
+            if (showTiming == "12 Noon")
             {
                 audiName = "Audi 1";
             }
@@ -182,7 +188,7 @@ namespace coreUserPanel.Controllers
                 TempData["uid"] = id;
                 return View(userDetails);
             }
-           
+
         }
         [Route("Checkout")]
         [HttpPost]
@@ -223,18 +229,18 @@ namespace coreUserPanel.Controllers
 
             TempData.Keep("uid");
             TempData["bookingId"] = booking.BookingId;
-            return RedirectToAction("NewInvoice", "Ticket");
+            return RedirectToAction("Index", "Payment");
         }
 
 
-       
+
 
         public IActionResult NewInvoice()
         {
-            
+
             int userId = Convert.ToInt32(TempData["uid"]);
             int bookingId = Convert.ToInt32(TempData["bookingId"]);
-        
+
 
             var bookmovie = SessionHelper.GetObjectFromJson<List<Item>>(HttpContext.Session, "bookmovie");
             UserDetails user = context.UserDetails.Where(u => u.UserDetailId == userId).SingleOrDefault();
@@ -242,7 +248,7 @@ namespace coreUserPanel.Controllers
 
             //Bookings booking = context.Bookings.Where()
             //Bookings booking = context.Bookings.Where(b => b.UserDetailId == userId).SingleOrDefault();
-         
+
             ViewBag.bookmovie = bookmovie;
             ViewBag.Total = bookmovie.Sum(item => item.Movies.MoviePrice * item.Quantity);
             ViewBag.user = user;
@@ -270,9 +276,9 @@ namespace coreUserPanel.Controllers
 
 
         }
-        
 
-        
+
+
         [HttpGet]
         public IActionResult EditProfile()
         {
@@ -280,7 +286,7 @@ namespace coreUserPanel.Controllers
         }
 
         [HttpPost]
-        public IActionResult EditProfile( UserDetails m1)
+        public IActionResult EditProfile(UserDetails m1)
         {
             int id = int.Parse(HttpContext.Session.GetString("uid"));
             UserDetails user = context.UserDetails.Where(x => x.UserDetailId == id).SingleOrDefault();
@@ -290,9 +296,17 @@ namespace coreUserPanel.Controllers
             context.SaveChanges();
             return RedirectToAction("Index");
         }
-        
+
+
+        public IActionResult Nowshowing(int id)
+        {
+
+            var movies = context.Movies.Where(m => m.MovieId == id).Distinct().ToList();
+            return View(movies);
+
+           
+        }
     }
-    
 }
 
 

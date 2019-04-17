@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace coreUserPanel.Models
 {
@@ -7,6 +8,7 @@ namespace coreUserPanel.Models
     {
         public int UserDetailId { get; set; }
         public int MovieId { get; set; }
+        
         public string Comment { get; set; }
 
         public Movies Movie { get; set; }

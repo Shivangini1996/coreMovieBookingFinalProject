@@ -25,7 +25,7 @@ namespace coreUserPanel.Models
         public virtual DbSet<Payments> Payments { get; set; }
         public virtual DbSet<Reviews> Reviews { get; set; }
         public virtual DbSet<UserDetails> UserDetails { get; set; }
-
+       
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -122,7 +122,7 @@ namespace coreUserPanel.Models
                 entity.HasIndex(e => e.BookingId)
                     .IsUnique();
 
-                entity.Property(e => e.Pay).HasColumnName("pay");
+                entity.Property(e => e.Amount).HasColumnName("amount");
 
                 entity.HasOne(d => d.Booking)
                     .WithOne(p => p.Payments)

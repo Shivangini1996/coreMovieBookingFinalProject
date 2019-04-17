@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace coreUserPanel.Models
 {
@@ -11,10 +12,15 @@ namespace coreUserPanel.Models
         }
 
         public int MovieId { get; set; }
+       
         public string MovieName { get; set; }
+       
         public double MoviePrice { get; set; }
+        
         public string MovieImage { get; set; }
+       
         public string MovieDuration { get; set; }
+      
         public string MovieDescription { get; set; }
         public int MultiplexId { get; set; }
 

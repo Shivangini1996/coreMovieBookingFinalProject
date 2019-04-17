@@ -36,8 +36,12 @@
                       
                     </div>
                     <div class="col-xs-6 text-right">
+                        
+
 
                         <h3 class="to">Booking Date:@ViewBag.book.BookingDate</h3>
+                        <h3 class="to">Audi:@ViewBag.book.AudiName</h3>
+
                         @*<address>
             <strong>Order Date:</strong><br>
             March 7, 2014<br><br>
@@ -64,7 +68,7 @@
                                         <th class="text-center"><strong>Movie Price</strong></th>
                                         <th class="text-right"><strong>Seats</strong></th>
                                         <th class="text-right"><strong>Amount</strong></th>
-                            
+
 
 
 
@@ -77,28 +81,28 @@
 
                                     @foreach (var item in ViewBag.bookmovie)
                                     {
-                                    <tr>
+                                        <tr>
 
-                                        <td class="text-center">@item.Movies.MovieName</td>
+                                            <td class="text-center">@item.Movies.MovieName</td>
 
-                                        <td class="text-center">@(item.Movies.MoviePrice * item.Quantity)</td>
-                                        <td class="text-right">@(item.Quantity)</td>
-                                       
-                                        <td class="text-right">@ViewBag.total</td>
+                                            <td class="text-center">@(item.Movies.MoviePrice * item.Quantity)</td>
+                                            <td class="text-right">@(item.Quantity)</td>
+
+                                            <td class="text-right">@ViewBag.total</td>
 
 
-                                    </tr>
+                                        </tr>
                                         @*<table class=" table table-responsive">
-                                            <thead>
-                                            <th class="text-right"><strong>Discount</strong></th>
+                                <thead>
+                                <th class="text-right"><strong>Discount</strong></th>
 
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td class="text-right">@(ViewBag.total - ViewBag.discount)</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>*@
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="text-right">@(ViewBag.total - ViewBag.discount)</td>
+                                    </tr>
+                                </tbody>
+                            </table>*@
                                         <table class=" table table-responsive ">
                                             <thead>
                                             <th class="text-right"><strong>Sub Total</strong></th>
@@ -113,10 +117,13 @@
                                     }
                                 </tbody>
                             </table>
+
                         </div>
                     </div>
+                    
                 </div>
             </div>
         </div>
     </div>
 
+    <a asp-action="Index" asp-controller="Home" class="btn btn-primary">Home</a>

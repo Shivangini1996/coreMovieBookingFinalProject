@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace coreUserPanel.Models
 {
@@ -12,9 +13,12 @@ namespace coreUserPanel.Models
         }
 
         public int MultiplexId { get; set; }
+        
         public string MultiplexName { get; set; }
+       
         public string MultiplexDescription { get; set; }
         public int LocationId { get; set; }
+        
         public string MultiplexImage { get; set; }
 
         public Locations Location { get; set; }

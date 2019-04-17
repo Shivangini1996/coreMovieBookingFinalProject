@@ -62,6 +62,14 @@ namespace coreUserPanel.Controllers
         {
             List<Item> cart = SessionHelper.GetObjectFromJson<List<Item>>(HttpContext.Session, "bookmovie");
             int index = isExist(id);
+            if (index != -1)
+            {
+                cart[index].Quantity--;
+            }
+            else
+            {
+                cart.Add(new Item { Movies = context.Movies.Find(id), Quantity = 1 });
+            }
             cart.RemoveAt(index);
             SessionHelper.SetObjectAsJson(HttpContext.Session, "bookmovie", cart);
             return RedirectToAction("Index");
